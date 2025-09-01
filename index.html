@@ -1,229 +1,187 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
+<html lang="fr">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.7">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>CalculGEA</title>
+<style>
+  :root{--bg:#0b0b0c;--fg:#f6f7fb;--muted:#a0a4b1;--card:#141417;}
+  body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.4 system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto;}
+  header{padding:16px 20px;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--bg);}
+  .wrap{max-width:1100px;margin:0 auto;padding:20px;}
+  h1{font-size:20px;margin:0;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;}
+  .card{background:var(--card);border:1px solid #1f1f23;border-radius:14px;padding:14px;}
+  label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;}
+  input{width:100%;padding:10px 12px;background:#0e0e10;color:var(--fg);border:1px solid #2a2a2f;border-radius:10px;outline:none;}
+  .kpi{display:flex;justify-content:space-between;margin:6px 0;font-variant-numeric:tabular-nums;}
+  .kpi b{font-size:15px;}
+  .muted{color:var(--muted);font-size:12px;}
+  .big{font-size:22px;}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .btn{background:#1f1f23;border:1px solid #2a2a2f;color:var(--fg);padding:10px 14px;border-radius:10px;cursor:pointer}
+  .ok{background:#0a3; border-color:#094}
+  footer{color:var(--muted);font-size:12px;text-align:center;padding:20px}
+</style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="fr"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1">&lt;meta charset="utf-8"/&gt;</p>
-<p class="p1">&lt;meta name="viewport" content="width=device-width, initial-scale=1"/&gt;</p>
-<p class="p1">&lt;title&gt;CalculGEA&lt;/title&gt;</p>
-<p class="p1">&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>:root{--bg:#0b0b0c;--fg:#f6f7fb;--muted:#a0a4b1;--card:#141417;}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.4 system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto;}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>header{padding:16px 20px;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--bg);}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>.wrap{max-width:1100px;margin:0 auto;padding:20px;}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>h1{font-size:20px;margin:0;}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>.card{background:var(--card);border:1px solid #1f1f23;border-radius:14px;padding:14px;}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>input{width:100%;padding:10px 12px;background:#0e0e10;color:var(--fg);border:1px solid #2a2a2f;border-radius:10px;outline:none;}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>.kpi{display:flex;justify-content:space-between;margin:6px 0;font-variant-numeric:tabular-nums;}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>.kpi b{font-size:15px;}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>.muted{color:var(--muted);font-size:12px;}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>.big{font-size:22px;}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>.btn{background:#1f1f23;border:1px solid #2a2a2f;color:var(--fg);padding:10px 14px;border-radius:10px;cursor:pointer}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>.ok{background:#0a3; border-color:#094}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>footer{color:var(--muted);font-size:12px;text-align:center;padding:20px}</p>
-<p class="p1">&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1">&lt;header&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;h1&gt;CalculGEA&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="row"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;button class="btn" onclick="window.print()"&gt;Exporter PDF&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
-<p class="p1">&lt;/header&gt;</p>
-<p class="p1">&lt;div class="wrap"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="grid"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;h3&gt;Paramètres d'entrée&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;Demande (L/jour) &lt;input id="demand" type="number" value="200" step="10"&gt;&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;Prix eau embouteillée (€/L) &lt;input id="bottle" type="number" value="0.60" step="0.01"&gt;&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;Jours/an &lt;input id="days" type="number" value="365"&gt;&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;kWh/L AWG &lt;input id="kwhL" type="number" value="0.35" step="0.01"&gt;&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;Disponibilité (0–1) &lt;input id="uptime" type="number" value="0.95" step="0.01" min="0" max="1"&gt;&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;Facteur climat (0–1) &lt;input id="climate" type="number" value="1" step="0.05" min="0" max="1"&gt;&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;CAPEX AWG (€) &lt;input id="capex_awg" type="number" value="10000" step="100"&gt;&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;Installation (€) &lt;input id="install" type="number" value="1000" step="50"&gt;&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;Maintenance/an (€) &lt;input id="maint" type="number" value="1000" step="50"&gt;&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;Prix réseau (€/kWh) &lt;input id="grid" type="number" value="0.25" step="0.01"&gt;&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;PV kWc &lt;input id="pvkwp" type="number" value="5" step="0.5"&gt;&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;Rdt PV (kWh/kWc/an) &lt;input id="pvyield" type="number" value="950" step="10"&gt;&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;CAPEX PV (€/kWc) &lt;input id="pvcap" type="number" value="1200" step="50"&gt;&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;Durée projet (ans) &lt;input id="years" type="number" value="10"&gt;&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;Taux actualisation &lt;input id="disc" type="number" value="0.08" step="0.01"&gt;&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;Plastique (g/L) &lt;input id="plastg" type="number" value="20" step="1"&gt;&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;CO₂ plastique (kg/kg) &lt;input id="pco2" type="number" value="2.7" step="0.1"&gt;&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;label&gt;CO₂ réseau (kg/kWh) &lt;input id="gco2" type="number" value="0.23" step="0.01"&gt;&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="row"&gt;&lt;button class="btn ok" onclick="run()"&gt;Calculer&lt;/button&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;p class="muted"&gt;Specs nominales à 30 °C / 80 % HR. Ajustez “Facteur climat”.&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;h3&gt;Recommandation modèle GENAQ&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="rec"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;h3&gt;Finance — AVEC PV&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="finPV"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;h3&gt;Finance — SANS PV&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="finNoPV"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;h3&gt;Impacts&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="imp"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
-<p class="p1">&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;footer&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>© CalculGEA — Outil estimatif (les performances dépendent du climat et du site).</p>
-<p class="p1">&lt;/footer&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;script&gt;</p>
-<p class="p1">const models = [</p>
-<p class="p1"><span class="Apple-converted-space">  </span>{name:"Stratus S50", lpd:52, type:"Distributeur"},</p>
-<p class="p1"><span class="Apple-converted-space">  </span>{name:"Stratus S200", lpd:200, type:"Distributeur"},</p>
-<p class="p1"><span class="Apple-converted-space">  </span>{name:"Cumulus C500", lpd:573, type:"Emergency/Outdoor"},</p>
-<p class="p1"><span class="Apple-converted-space">  </span>{name:"Cumulus C5000", lpd:5192, type:"Emergency/Container"},</p>
-<p class="p1">];</p>
-<p class="p2"><br></p>
-<p class="p1">function fmt€(x){return (Math.round(x)).toLocaleString('fr-FR') + ' €';}</p>
-<p class="p1">function fmt(x,d=1){return Number(x).toLocaleString('fr-FR',{maximumFractionDigits:d, minimumFractionDigits:d});}</p>
-<p class="p2"><br></p>
-<p class="p1">function npv(rate, cash){</p>
-<p class="p1"><span class="Apple-converted-space">  </span>let s = 0;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>for(let t=1;t&lt;cash.length;t++){ s += cash[t] / Math.pow(1+rate, t); }</p>
-<p class="p1"><span class="Apple-converted-space">  </span>return s + cash[0];</p>
-<p class="p1">}</p>
-<p class="p1">function irr(cash, guess=0.1){</p>
-<p class="p1"><span class="Apple-converted-space">  </span>let rate = guess;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>for(let i=0;i&lt;100;i++){</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let f = 0, df = 0;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>for(let t=0;t&lt;cash.length;t++){</p>
-<p class="p1"><span class="Apple-converted-space">      </span>f += cash[t] / Math.pow(1+rate, t);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if(t&gt;0){ df += -t*cash[t] / Math.pow(1+rate, t+1); }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const newRate = rate - f/df;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if(!isFinite(newRate)) break;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if(Math.abs(newRate-rate) &lt; 1e-8) { rate = newRate; break; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>rate = newRate;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>return rate;</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">function recommendModel(reqLPD, derate){</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const effLPD = models.map(m =&gt; ({...m, eff: m.lpd*derate}));</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const m = effLPD.find(m =&gt; m.eff &gt;= reqLPD);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>return m || {name:"AWGplant (projet sur-mesure)", lpd:100000, type:"Industriel"};</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">function run(){</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const demand = +document.getElementById('demand').value;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const bottle = +document.getElementById('bottle').value;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const days <span class="Apple-converted-space">  </span>= +document.getElementById('days').value;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const kwhL <span class="Apple-converted-space">  </span>= +document.getElementById('kwhL').value;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const uptime = +document.getElementById('uptime').value;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const climate= +document.getElementById('climate').value;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const capex_awg = +document.getElementById('capex_awg').value;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const install = +document.getElementById('install').value;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const maint <span class="Apple-converted-space">  </span>= +document.getElementById('maint').value;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const grid<span class="Apple-converted-space">    </span>= +document.getElementById('grid').value;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const pvkwp <span class="Apple-converted-space">  </span>= +document.getElementById('pvkwp').value;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const pvyield = +document.getElementById('pvyield').value;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const pvcap <span class="Apple-converted-space">  </span>= +document.getElementById('pvcap').value;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const years <span class="Apple-converted-space">  </span>= +document.getElementById('years').value;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const disc<span class="Apple-converted-space">    </span>= +document.getElementById('disc').value;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const plastg<span class="Apple-converted-space">  </span>= +document.getElementById('plastg').value;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const pco2<span class="Apple-converted-space">    </span>= +document.getElementById('pco2').value;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const gco2<span class="Apple-converted-space">    </span>= +document.getElementById('gco2').value;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>const annualDemandL = demand*days;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const rec = recommendModel(demand/(uptime*climate), climate);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const awgLPD = rec.lpd;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const annualCapL = awgLPD*uptime*days;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const annualLiters = Math.min(annualDemandL, annualCapL);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const baseline = annualLiters*bottle;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const awgKwh = annualLiters*kwhL;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const pvKwh<span class="Apple-converted-space">  </span>= pvkwp*pvyield;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const gridWithPV = Math.max(0, awgKwh - pvKwh);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const elecWithPV = gridWithPV*grid;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const elecNoPV <span class="Apple-converted-space">  </span>= awgKwh*grid;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const opexPV<span class="Apple-converted-space">  </span>= maint + elecWithPV;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const opexNo<span class="Apple-converted-space">  </span>= maint + elecNoPV;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const savePV<span class="Apple-converted-space">  </span>= Math.max(0, baseline - opexPV);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const saveNo<span class="Apple-converted-space">  </span>= Math.max(0, baseline - opexNo);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const capexPV = capex_awg + install + pvkwp*pvcap;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const capexNo = capex_awg + install;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>const cfPV = [-capexPV]; for(let i=0;i&lt;years;i++) cfPV.push(savePV);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const cfNo = [-capexNo]; for(let i=0;i&lt;years;i++) cfNo.push(saveNo);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>const npvPV = npv(disc, cfPV);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const npvNo = npv(disc, cfNo);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const irrPV = irr(cfPV);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const irrNo = irr(cfNo);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>const plastKg = annualLiters*plastg/1000;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const plastCO2 = plastKg*pco2;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const co2PV = gridWithPV*gco2;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const co2No = awgKwh*gco2;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('rec').innerHTML = `</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;Modèle&lt;/span&gt;&lt;b class="big"&gt;${rec.name}&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;Type&lt;/span&gt;&lt;b&gt;${rec.type}&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;Capacité nominale&lt;/span&gt;&lt;b&gt;${fmt(rec.lpd,0)} L/j&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;Besoin requis (corrigé)&lt;/span&gt;&lt;b&gt;${fmt(demand/(uptime*climate),0)} L/j&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>`;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('finPV').innerHTML = `</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;CAPEX&lt;/span&gt;&lt;b&gt;${fmt€(capexPV)}&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;OPEX/an&lt;/span&gt;&lt;b&gt;${fmt€(opexPV)}&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;Économies/an&lt;/span&gt;&lt;b&gt;${fmt€(savePV)}&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;Payback&lt;/span&gt;&lt;b&gt;${ isFinite(capexPV/savePV) ? fmt(capexPV/savePV,1)+' ans' : '—' }&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;NPV (${years} ans)&lt;/span&gt;&lt;b&gt;${fmt€(npvPV)}&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;IRR&lt;/span&gt;&lt;b&gt;${ isFinite(irrPV) ? (irrPV*100).toFixed(1)+' %' : '—' }&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>`;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('finNoPV').innerHTML = `</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;CAPEX&lt;/span&gt;&lt;b&gt;${fmt€(capexNo)}&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;OPEX/an&lt;/span&gt;&lt;b&gt;${fmt€(opexNo)}&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;Économies/an&lt;/span&gt;&lt;b&gt;${fmt€(saveNo)}&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;Payback&lt;/span&gt;&lt;b&gt;${ isFinite(capexNo/saveNo) ? fmt(capexNo/saveNo,1)+' ans' : '—' }&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;NPV (${years} ans)&lt;/span&gt;&lt;b&gt;${fmt€(npvNo)}&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;IRR&lt;/span&gt;&lt;b&gt;${ isFinite(irrNo) ? (irrNo*100).toFixed(1)+' %' : '—' }&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>`;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('imp').innerHTML = `</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;Litres fournis/an&lt;/span&gt;&lt;b&gt;${fmt(annualLiters,0)} L&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;kWh AWG/an&lt;/span&gt;&lt;b&gt;${fmt(awgKwh,0)} kWh&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;kWh PV/an&lt;/span&gt;&lt;b&gt;${fmt(pvKwh,0)} kWh&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;kWh réseau avec PV&lt;/span&gt;&lt;b&gt;${fmt(gridWithPV,0)} kWh&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;Plastique évité&lt;/span&gt;&lt;b&gt;${fmt(plastKg,1)} kg/an&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;CO₂ plastique évité&lt;/span&gt;&lt;b&gt;${fmt(plastCO2,0)} kg&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;CO₂ réseau (avec PV)&lt;/span&gt;&lt;b&gt;${fmt(co2PV,0)} kg&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="kpi"&gt;&lt;span&gt;CO₂ réseau (sans PV)&lt;/span&gt;&lt;b&gt;${fmt(co2No,0)} kg&lt;/b&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>`;</p>
-<p class="p1">}</p>
-<p class="p1">run();</p>
-<p class="p1">&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
-</body>
+<header>
+  <h1>CalculGEA</h1>
+  <div class="row">
+    <button class="btn" onclick="window.print()">Exporter PDF</button>
+  </div>
+</header>
+<div class="wrap">
+  <div class="grid">
+    <div class="card">
+      <h3>Paramètres d'entrée</h3>
+      <label>Demande (L/jour) <input id="demand" type="number" value="200" step="10"></label>
+      <label>Prix eau embouteillée (€/L) <input id="bottle" type="number" value="0.60" step="0.01"></label>
+      <label>Jours/an <input id="days" type="number" value="365"></label>
+      <label>kWh/L AWG <input id="kwhL" type="number" value="0.35" step="0.01"></label>
+      <label>Disponibilité (0–1) <input id="uptime" type="number" value="0.95" step="0.01" min="0" max="1"></label>
+      <label>Facteur climat (0–1) <input id="climate" type="number" value="1" step="0.05" min="0" max="1"></label>
+      <label>CAPEX AWG (€) <input id="capex_awg" type="number" value="10000" step="100"></label>
+      <label>Installation (€) <input id="install" type="number" value="1000" step="50"></label>
+      <label>Maintenance/an (€) <input id="maint" type="number" value="1000" step="50"></label>
+      <label>Prix réseau (€/kWh) <input id="grid" type="number" value="0.25" step="0.01"></label>
+      <label>PV kWc <input id="pvkwp" type="number" value="5" step="0.5"></label>
+      <label>Rdt PV (kWh/kWc/an) <input id="pvyield" type="number" value="950" step="10"></label>
+      <label>CAPEX PV (€/kWc) <input id="pvcap" type="number" value="1200" step="50"></label>
+      <label>Durée projet (ans) <input id="years" type="number" value="10"></label>
+      <label>Taux actualisation <input id="disc" type="number" value="0.08" step="0.01"></label>
+      <label>Plastique (g/L) <input id="plastg" type="number" value="20" step="1"></label>
+      <label>CO₂ plastique (kg/kg) <input id="pco2" type="number" value="2.7" step="0.1"></label>
+      <label>CO₂ réseau (kg/kWh) <input id="gco2" type="number" value="0.23" step="0.01"></label>
+      <div class="row"><button class="btn ok" onclick="run()">Calculer</button></div>
+      <p class="muted">Specs nominales à 30 °C / 80 % HR. Ajustez “Facteur climat”.</p>
+    </div>
 
+    <div class="card">
+      <h3>Recommandation modèle GENAQ</h3>
+      <div id="rec"></div>
+    </div>
+
+    <div class="card">
+      <h3>Finance — AVEC PV</h3>
+      <div id="finPV"></div>
+    </div>
+
+    <div class="card">
+      <h3>Finance — SANS PV</h3>
+      <div id="finNoPV"></div>
+    </div>
+
+    <div class="card">
+      <h3>Impacts</h3>
+      <div id="imp"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © CalculGEA — Outil estimatif (les performances dépendent du climat et du site).
+</footer>
+
+<script>
+const models = [
+  {name:"Stratus S50", lpd:52, type:"Distributeur"},
+  {name:"Stratus S200", lpd:200, type:"Distributeur"},
+  {name:"Cumulus C500", lpd:573, type:"Emergency/Outdoor"},
+  {name:"Cumulus C5000", lpd:5192, type:"Emergency/Container"},
+];
+
+function fmt€(x){return (Math.round(x)).toLocaleString('fr-FR') + ' €';}
+function fmt(x,d=1){return Number(x).toLocaleString('fr-FR',{maximumFractionDigits:d, minimumFractionDigits:d});}
+
+function npv(rate, cash){
+  let s = 0;
+  for(let t=1;t<cash.length;t++){ s += cash[t] / Math.pow(1+rate, t); }
+  return s + cash[0];
+}
+function irr(cash, guess=0.1){
+  let rate = guess;
+  for(let i=0;i<100;i++){
+    let f = 0, df = 0;
+    for(let t=0;t<cash.length;t++){
+      f += cash[t] / Math.pow(1+rate, t);
+      if(t>0){ df += -t*cash[t] / Math.pow(1+rate, t+1); }
+    }
+    const newRate = rate - f/df;
+    if(!isFinite(newRate)) break;
+    if(Math.abs(newRate-rate) < 1e-8) { rate = newRate; break; }
+    rate = newRate;
+  }
+  return rate;
+}
+
+function recommendModel(reqLPD, derate){
+  const effLPD = models.map(m => ({...m, eff: m.lpd*derate}));
+  const m = effLPD.find(m => m.eff >= reqLPD);
+  return m || {name:"AWGplant (projet sur-mesure)", lpd:100000, type:"Industriel"};
+}
+
+function run(){
+  const demand = +document.getElementById('demand').value;
+  const bottle = +document.getElementById('bottle').value;
+  const days   = +document.getElementById('days').value;
+  const kwhL   = +document.getElementById('kwhL').value;
+  const uptime = +document.getElementById('uptime').value;
+  const climate= +document.getElementById('climate').value;
+  const capex_awg = +document.getElementById('capex_awg').value;
+  const install = +document.getElementById('install').value;
+  const maint   = +document.getElementById('maint').value;
+  const grid    = +document.getElementById('grid').value;
+  const pvkwp   = +document.getElementById('pvkwp').value;
+  const pvyield = +document.getElementById('pvyield').value;
+  const pvcap   = +document.getElementById('pvcap').value;
+  const years   = +document.getElementById('years').value;
+  const disc    = +document.getElementById('disc').value;
+  const plastg  = +document.getElementById('plastg').value;
+  const pco2    = +document.getElementById('pco2').value;
+  const gco2    = +document.getElementById('gco2').value;
+
+  const annualDemandL = demand*days;
+  const rec = recommendModel(demand/(uptime*climate), climate);
+  const awgLPD = rec.lpd;
+  const annualCapL = awgLPD*uptime*days;
+  const annualLiters = Math.min(annualDemandL, annualCapL);
+  const baseline = annualLiters*bottle;
+  const awgKwh = annualLiters*kwhL;
+  const pvKwh  = pvkwp*pvyield;
+  const gridWithPV = Math.max(0, awgKwh - pvKwh);
+  const elecWithPV = gridWithPV*grid;
+  const elecNoPV   = awgKwh*grid;
+  const opexPV  = maint + elecWithPV;
+  const opexNo  = maint + elecNoPV;
+  const savePV  = Math.max(0, baseline - opexPV);
+  const saveNo  = Math.max(0, baseline - opexNo);
+  const capexPV = capex_awg + install + pvkwp*pvcap;
+  const capexNo = capex_awg + install;
+
+  const cfPV = [-capexPV]; for(let i=0;i<years;i++) cfPV.push(savePV);
+  const cfNo = [-capexNo]; for(let i=0;i<years;i++) cfNo.push(saveNo);
+
+  const npvPV = npv(disc, cfPV);
+  const npvNo = npv(disc, cfNo);
+  const irrPV = irr(cfPV);
+  const irrNo = irr(cfNo);
+
+  const plastKg = annualLiters*plastg/1000;
+  const plastCO2 = plastKg*pco2;
+  const co2PV = gridWithPV*gco2;
+  const co2No = awgKwh*gco2;
+
+  document.getElementById('rec').innerHTML = `
+    <div class="kpi"><span>Modèle</span><b class="big">${rec.name}</b></div>
+    <div class="kpi"><span>Type</span><b>${rec.type}</b></div>
+    <div class="kpi"><span>Capacité nominale</span><b>${fmt(rec.lpd,0)} L/j</b></div>
+    <div class="kpi"><span>Besoin requis (corrigé)</span><b>${fmt(demand/(uptime*climate),0)} L/j</b></div>
+  `;
+
+  document.getElementById('finPV').innerHTML = `
+    <div class="kpi"><span>CAPEX</span><b>${fmt€(capexPV)}</b></div>
+    <div class="kpi"><span>OPEX/an</span><b>${fmt€(opexPV)}</b></div>
+    <div class="kpi"><span>Économies/an</span><b>${fmt€(savePV)}</b></div>
+    <div class="kpi"><span>Payback</span><b>${ isFinite(capexPV/savePV) ? fmt(capexPV/savePV,1)+' ans' : '—' }</b></div>
+    <div class="kpi"><span>
