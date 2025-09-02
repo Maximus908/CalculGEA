@@ -3,77 +3,321 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>CalculGEA</title>
+<title>CalculGEA — AERMABE</title>
+
+<!-- Couleurs & PWA -->
+<meta name="theme-color" content="#0C3B5D"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="apple-touch-icon.png" type="image/png"/>
+
 <style>
-  body { font-family: Arial, sans-serif; background:#f5f5f5; margin:0; padding:20px; }
-  h1 { text-align:center; color:#004080; }
-  .card { background:#fff; padding:20px; margin:20px auto; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2); max-width:600px; }
-  label { display:block; margin-top:10px; font-weight:bold; }
-  input, select { width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:5px; }
-  button { margin-top:20px; width:100%; padding:12px; background:#004080; color:white; font-size:16px; border:none; border-radius:6px; cursor:pointer; }
-  button:hover { background:#0066cc; }
-  .result { margin-top:20px; padding:15px; background:#e9f5ff; border-left:4px solid #004080; }
+  :root{
+    --brand:#0C3B5D;         /* Bleu AERMABE (proposé) */
+    --brand-2:#E6B800;       /* Doré accent */
+    --bg:#0B1220; --fg:#F7F9FC; --muted:#A9B8CC; --card:#111A2B; --line:#213149;
+    --ok:#10B981; --warn:#F59E0B; --bad:#EF4444;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--bg);color:var(--fg);font:15px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto}
+
+  /* Header */
+  header{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,rgba(12,59,93,.9),rgba(12,59,93,.75));border-bottom:1px solid rgba(255,255,255,.08)}
+  .wrap{max-width:1100px;margin:0 auto;padding:16px}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .brand{display:flex;gap:12px;align-items:center}
+  .logo{width:36px;height:36px;border-radius:8px;background:conic-gradient(from 45deg,var(--brand),var(--brand-2),var(--brand));box-shadow:0 0 0 2px rgba(255,255,255,.15) inset}
+  h1{font-size:18px;margin:0;letter-spacing:.3px}
+
+  /* Layout */
+  main .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-top:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+  .span-4{grid-column:span 4}.span-6{grid-column:span 6}.span-8{grid-column:span 8}.span-12{grid-column:span 12}
+  @media (max-width:900px){.span-4,.span-6,.span-8,.span-12{grid-column:span 12}}
+
+  h2{font-size:16px;margin:0 0 10px}
+  label{display:block;font-size:12px;color:var(--muted);margin:10px 0 6px}
+  input,select{width:100%;padding:10px 12px;background:#0E1730;color:var(--fg);border:1px solid var(--line);border-radius:10px;outline:none}
+  .btn{padding:11px 14px;border-radius:10px;border:1px solid var(--line);background:#0E1730;color:var(--fg);cursor:pointer}
+  .btn-primary{background:var(--brand);border-color:#08314d}
+  .btn-ghost{background:#0E1730}
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .kpi{padding:12px;border:1px dashed var(--line);border-radius:12px}
+  .kpi small{color:var(--muted);display:block}
+  .kpi b{font-size:18px}
+  .badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid var(--line);background:#0d1930}
+  table{width:100%;border-collapse:collapse;margin-top:8px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  th,td{padding:10px;border-bottom:1px solid var(--line);text-align:right}
+  th:first-child,td:first-child{text-align:left}
+  th{background:#0E1A33;color:#d5e0ef;font-weight:600}
+  tfoot td{font-weight:700}
+  .muted{color:var(--muted);font-size:12px}
+  footer{color:var(--muted);text-align:center;padding:14px}
+
+  /* Impression claire */
+  @media print{
+    :root{--bg:#fff;--fg:#111;--muted:#666;--card:#fff;--line:#ddd}
+    body{background:#fff;color:#111}
+    header{position:static;background:#fff;border:none}
+    .logo{box-shadow:none}
+    .btn{display:none}
+    th{background:#f3f6fb;color:#111}
+    .card{border:1px solid #ddd}
+  }
 </style>
 </head>
 <body>
-  <h1>CalculGEA</h1>
-  <div class="card">
-    <label>Besoin en eau (L/jour)</label>
-    <input id="litres" type="number" value="200">
-
-    <label>Prix eau embouteillée (€/L)</label>
-    <input id="prix" type="number" value="0.6" step="0.01">
-
-    <label>Durée projet (années)</label>
-    <input id="annees" type="number" value="10">
-
-    <label>Alimentation solaire disponible ?</label>
-    <select id="solaire">
-      <option value="oui">Oui</option>
-      <option value="non">Non</option>
-    </select>
-
-    <button onclick="calculer()">Calculer</button>
-
-    <div id="resultat" class="result" style="display:none;"></div>
+<header>
+  <div class="wrap row" style="justify-content:space-between">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <h1>CalculGEA — <span style="color:var(--brand-2)">AERMABE</span></h1>
+        <div class="muted" style="margin-top:2px">Simulateur ROI & Sélection automatique GENAQ</div>
+      </div>
+    </div>
+    <div class="row">
+      <button class="btn btn-ghost" id="resetBtn">Réinitialiser</button>
+      <button class="btn btn-primary" id="pdfBtn">Exporter PDF</button>
+    </div>
   </div>
+</header>
+
+<main class="wrap">
+  <div class="grid">
+    <!-- Entrées -->
+    <section class="card span-4" aria-label="Paramètres">
+      <h2>Paramètres</h2>
+      <label>Besoin en eau (L/jour)</label>
+      <input id="demand" type="number" value="200" min="10" step="10" inputmode="decimal">
+      <label>Prix eau embouteillée (€/L)</label>
+      <input id="bottle" type="number" value="0.60" step="0.01" min="0" inputmode="decimal">
+      <label>Disponibilité machine (0–1)</label>
+      <input id="uptime" type="number" value="0.95" step="0.01" min="0.5" max="1" inputmode="decimal">
+      <label>Facteur climat (0–1)</label>
+      <input id="climate" type="number" value="1.00" step="0.05" min="0.5" max="1" inputmode="decimal">
+      <label>kWh/L du GEA</label>
+      <input id="kwhL" type="number" value="0.35" step="0.01" min="0.15" max="0.6" inputmode="decimal">
+      <label>Électricité réseau (€/kWh)</label>
+      <input id="grid" type="number" value="0.25" step="0.01" min="0" inputmode="decimal">
+      <label>PV kWc (si 0 → sans PV)</label>
+      <input id="pvkwp" type="number" value="5" step="0.5" min="0" inputmode="decimal">
+      <label>Rendement PV (kWh/kWc/an)</label>
+      <input id="pvyield" type="number" value="950" step="10" min="0" inputmode="decimal">
+      <label>CAPEX AWG (€)</label>
+      <input id="capex_awg" type="number" value="10000" step="100" min="0" inputmode="decimal">
+      <label>Installation & divers (€)</label>
+      <input id="install" type="number" value="1000" step="50" min="0" inputmode="decimal">
+      <label>CAPEX PV (€/kWc)</label>
+      <input id="pvcap" type="number" value="1200" step="50" min="0" inputmode="decimal">
+      <label>Maintenance annuelle (€)</label>
+      <input id="maint" type="number" value="1000" step="50" min="0" inputmode="decimal">
+      <label>Durée du projet (ans)</label>
+      <input id="years" type="number" value="10" min="1" step="1" inputmode="numeric">
+      <label>Taux d’actualisation</label>
+      <input id="disc" type="number" value="0.08" step="0.01" min="0" max="1" inputmode="decimal">
+      <div class="row" style="margin-top:10px">
+        <button class="btn btn-primary" id="calcBtn">Calculer</button>
+      </div>
+      <p class="muted">Hypothèses nominales 30 °C / 80 % HR. Ajuste “climat” et “kWh/L” pour être conservateur.</p>
+    </section>
+
+    <!-- Résumé exécutif -->
+    <section class="card span-8" aria-live="polite">
+      <h2>Résumé exécutif</h2>
+      <div class="kpis">
+        <div class="kpi"><small>Modèle recommandé</small><b id="k_model">—</b><div class="badge" id="k_model_type">—</div></div>
+        <div class="kpi"><small>ROI (payback)</small><b id="k_payback">—</b></div>
+        <div class="kpi"><small>Économies annuelles</small><b id="k_savings">—</b></div>
+        <div class="kpi"><small>NPV sur projet</small><b id="k_npv">—</b></div>
+      </div>
+      <p class="muted" id="summary_note" style="margin-top:8px">Remplis les paramètres puis lance le calcul.</p>
+    </section>
+
+    <!-- Comparatif financier -->
+    <section class="card span-12">
+      <h2>Comparatif financier — Avec PV vs Sans PV</h2>
+      <table aria-label="Comparatif financier">
+        <thead><tr><th>Indicateur</th><th>Avec PV</th><th>Sans PV</th></tr></thead>
+        <tbody id="finRows"></tbody>
+      </table>
+    </section>
+
+    <!-- Impacts + Détails sélection -->
+    <section class="card span-6">
+      <h2>Impacts</h2>
+      <table aria-label="Impacts">
+        <tbody id="impactRows"></tbody>
+      </table>
+    </section>
+
+    <section class="card span-6">
+      <h2>Détails sélection GENAQ</h2>
+      <table aria-label="Modèle GENAQ">
+        <tbody id="modelRows"></tbody>
+      </table>
+    </section>
+  </div>
+</main>
+
+<footer>
+  © AERMABE — CalculGEA. Outil estimatif ; performances réelles dépendantes du site et du climat.
+</footer>
 
 <script>
-function calculer() {
-  const litres = parseFloat(document.getElementById("litres").value);
-  const prix = parseFloat(document.getElementById("prix").value);
-  const annees = parseInt(document.getElementById("annees").value);
-  const solaire = document.getElementById("solaire").value;
+/* ---------- Données modèles GENAQ (nominal L/j) ---------- */
+const MODELS = [
+  {name:"Stratus S50",   lpd:52,   type:"Distributeur"},
+  {name:"Stratus S200",  lpd:200,  type:"Distributeur"},
+  {name:"Cumulus C500",  lpd:573,  type:"Outdoor/Emergency"},
+  {name:"Cumulus C5000", lpd:5192, type:"Container/Industrial"},
+];
 
-  // Choix du modèle GENAQ simplifié
-  let modele = "Stratus S50";
-  if (litres > 50 && litres <= 200) modele = "Stratus S200";
-  else if (litres > 200 && litres <= 500) modele = "Cumulus C500";
-  else if (litres > 500) modele = "Cumulus C5000";
+/* ---------- Utilitaires ---------- */
+const € = n => (Math.round(n)||0).toLocaleString('fr-FR')+' €';
+const fmt = (n,d=1)=> Number(n||0).toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const yrs = n => isFinite(n)&&n>0 ? fmt(n,1)+' ans' : '—';
+function npv(rate, cash){let s=0;for(let t=1;t<cash.length;t++) s+= cash[t]/Math.pow(1+rate,t);return s+cash[0];}
+function irr(cash, guess=0.1){
+  let r=guess;
+  for(let i=0;i<120;i++){
+    let f=0,df=0;
+    for(let t=0;t<cash.length;t++){
+      const d=Math.pow(1+r,t); f+=cash[t]/d; if(t>0) df+= -t*cash[t]/Math.pow(1+r,t+1);
+    }
+    const nr=r - f/df; if(!isFinite(nr)) break; if(Math.abs(nr-r)<1e-8) {r=nr;break;} r=nr;
+  }
+  return r;
+}
 
-  // Coûts (valeurs simplifiées)
-  const capex = (modele === "S50" ? 5000 : modele === "Stratus S200" ? 10000 : 20000);
-  const opex = solaire === "oui" ? 500 : 1200;
-  const economieAnnuelle = (litres * 365 * prix) - opex;
-  const economieTotale = economieAnnuelle * annees;
-  const payback = (capex / economieAnnuelle).toFixed(1);
+/* ---------- Cœur de calcul ---------- */
+function recommendModel(requiredLPD, derate){
+  const eff = MODELS.map(m=>({...m, eff: m.lpd*derate}));
+  const m = eff.find(m=> m.eff >= requiredLPD);
+  return m || {name:"AWGplant (projet sur-mesure)", lpd:100000, type:"Industriel"};
+}
+
+function runCalc(){
+  const demand = +document.getElementById('demand').value;
+  const bottle = +document.getElementById('bottle').value;
+  const uptime = +document.getElementById('uptime').value;
+  const climate= +document.getElementById('climate').value;
+  const kwhL   = +document.getElementById('kwhL').value;
+  const grid   = +document.getElementById('grid').value;
+  const pvkwp  = +document.getElementById('pvkwp').value;
+  const pvyield= +document.getElementById('pvyield').value;
+  const capex_awg= +document.getElementById('capex_awg').value;
+  const install  = +document.getElementById('install').value;
+  const pvcap    = +document.getElementById('pvcap').value;
+  const maint    = +document.getElementById('maint').value;
+  const years    = +document.getElementById('years').value;
+  const disc     = +document.getElementById('disc').value;
+
+  if([demand,bottle,uptime,climate,kwhL,grid,years,disc].some(x=>!isFinite(x)||x<0)){
+    alert("Vérifie les valeurs saisies (chiffres attendus).");
+    return;
+  }
+
+  const requiredLPD = demand/(uptime*climate);              // besoin corrigé
+  const choice = recommendModel(requiredLPD, climate);       // modèle
+  const awgLPD = choice.lpd;
+  const annualLiters = Math.min(demand*365, awgLPD*uptime*365);
+  const baseline = annualLiters*bottle;
+  const awgKwh = annualLiters*kwhL;
+  const pvKwh  = pvkwp*pvyield;
+  const gridWithPV = Math.max(0, awgKwh - pvKwh);
+  const elecWithPV = gridWithPV*grid;
+  const elecNoPV   = awgKwh*grid;
+  const opexPV  = maint + elecWithPV;
+  const opexNo  = maint + elecNoPV;
+  const savePV  = Math.max(0, baseline - opexPV);
+  const saveNo  = Math.max(0, baseline - opexNo);
+  const capexPV = capex_awg + install + pvkwp*pvcap;
+  const capexNo = capex_awg + install;
+
+  const cfPV = [-capexPV]; for(let i=0;i<years;i++) cfPV.push(savePV);
+  const cfNo = [-capexNo]; for(let i=0;i<years;i++) cfNo.push(saveNo);
+  const npvPV = npv(disc, cfPV), npvNo = npv(disc, cfNo);
+  const irrPVv = irr(cfPV), irrNov = irr(cfNo);
+  const payPV = savePV>0? capexPV/savePV : Infinity, payNo = saveNo>0? capexNo/saveNo : Infinity;
+
+  const plastKg = annualLiters*20/1000; // 20 g/L emballage
+  const plastCO2 = plastKg*2.7;
+  const co2PV = gridWithPV*0.23, co2No = awgKwh*0.23;
+
+  // Résumé exécutif
+  document.getElementById('k_model').textContent = choice.name;
+  document.getElementById('k_model_type').textContent = choice.type;
+  document.getElementById('k_payback').textContent = yrs(Math.min(payPV,payNo));
+  document.getElementById('k_savings').textContent = €(Math.max(savePV,saveNo));
+  document.getElementById('k_npv').textContent = €(Math.max(npvPV,npvNo));
+  document.getElementById('summary_note').textContent =
+    `Besoin corrigé: ${fmt(requiredLPD,0)} L/j • Capacité nominale choisie: ${fmt(choice.lpd,0)} L/j`;
+
+  // Tableau financier
+  const fin = [
+    ["CAPEX total", €(capexPV), €(capexNo)],
+    ["OPEX annuel", €(opexPV),  €(opexNo)],
+    ["Économies annuelles", €(savePV), €(saveNo)],
+    ["Payback (ans)", yrs(payPV), yrs(payNo)],
+    ["NPV ("+years+" ans)", €(npvPV), €(npvNo)],
+    ["IRR", (isFinite(irrPVv)? (irrPVv*100).toFixed(1)+' %':'—'), (isFinite(irrNov)? (irrNov*100).toFixed(1)+' %':'—')],
+  ];
+  document.getElementById('finRows').innerHTML =
+    fin.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join("");
 
   // Impacts
-  const plastiqueEvite = (litres * 365 * 20 / 1000).toFixed(1); // 20g/L
-  const co2Evite = (plastiqueEvite * 2.7).toFixed(0);
+  const impacts = [
+    ["Litres fournis/an", fmt(annualLiters,0)+" L"],
+    ["kWh AWG/an", fmt(awgKwh,0)+" kWh"],
+    ["kWh PV/an", fmt(pvKwh,0)+" kWh"],
+    ["kWh réseau (avec PV)", fmt(gridWithPV,0)+" kWh"],
+    ["Plastique évité", fmt(plastKg,1)+" kg/an"],
+    ["CO₂ plastique évité", fmt(plastCO2,0)+" kg"],
+    ["CO₂ réseau (avec PV)", fmt(co2PV,0)+" kg"],
+    ["CO₂ réseau (sans PV)", fmt(co2No,0)+" kg"],
+  ];
+  document.getElementById('impactRows').innerHTML =
+    impacts.map(r=>`<tr><td>${r[0]}</td><td style="text-align:right">${r[1]}</td></tr>`).join("");
 
-  document.getElementById("resultat").style.display = "block";
-  document.getElementById("resultat").innerHTML = `
-    <h3>Résultats</h3>
-    <p><b>Modèle recommandé :</b> ${modele}</p>
-    <p><b>CAPEX estimé :</b> ${capex.toLocaleString()} €</p>
-    <p><b>Économies annuelles :</b> ${economieAnnuelle.toLocaleString()} €</p>
-    <p><b>Économies sur ${annees} ans :</b> ${economieTotale.toLocaleString()} €</p>
-    <p><b>Retour sur investissement :</b> ${payback} ans</p>
-    <p><b>Plastique évité :</b> ${plastiqueEvite} kg/an</p>
-    <p><b>CO₂ évité :</b> ${co2Evite} kg/an</p>
-  `;
+  // Détails modèle
+  const modelDet = [
+    ["Besoin (corrigé)", fmt(requiredLPD,0)+" L/j"],
+    ["Modèle", choice.name],
+    ["Type", choice.type],
+    ["Capacité nominale", fmt(choice.lpd,0)+" L/j"],
+    ["Marge climat", fmt(climate*100,0)+" %"],
+    ["Marge disponibilité", fmt(uptime*100,0)+" %"],
+  ];
+  document.getElementById('modelRows').innerHTML =
+    modelDet.map(r=>`<tr><td>${r[0]}</td><td style="text-align:right">${r[1]}</td></tr>`).join("");
 }
+
+/* ---------- Actions UI ---------- */
+document.getElementById('calcBtn').addEventListener('click', runCalc);
+document.getElementById('pdfBtn').addEventListener('click', ()=>window.print());
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  const set = (id,val)=>document.getElementById(id).value=val;
+  set('demand',200); set('bottle',0.60); set('uptime',0.95); set('climate',1.00);
+  set('kwhL',0.35);  set('grid',0.25);   set('pvkwp',5);    set('pvyield',950);
+  set('capex_awg',10000); set('install',1000); set('pvcap',1200);
+  set('maint',1000); set('years',10); set('disc',0.08);
+  document.getElementById('finRows').innerHTML="";
+  document.getElementById('impactRows').innerHTML="";
+  document.getElementById('modelRows').innerHTML="";
+  document.getElementById('k_model').textContent="—";
+  document.getElementById('k_model_type').textContent="—";
+  document.getElementById('k_payback').textContent="—";
+  document.getElementById('k_savings').textContent="—";
+  document.getElementById('k_npv').textContent="—";
+  document.getElementById('summary_note').textContent="Remplis les paramètres puis lance le calcul.";
+});
+/* Premier rendu + PWA */
+runCalc();
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js'); }
 </script>
 </body>
 </html>
