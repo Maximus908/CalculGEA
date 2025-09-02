@@ -1,0 +1,11 @@
+{
+  "name": "CalculGEA — AERYSGIN",
+  "short_name": "CalculGEA",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0C3B5D",
+  "theme_color": "#0C3B5D",
+  "icons": [
+    { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}
