@@ -8,10 +8,10 @@
 <!-- iPhone full screen + thème -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 
-<!-- PWA manifest -->
-<link rel="manifest" href="/manifest.webmanifest">
+<!-- PWA manifest (relatif au repo) -->
+<link rel="manifest" href="manifest.webmanifest?v=6">
 
 <style>
   :root{--bg:#0b1220;--fg:#f7f9fc;--muted:#a9b8cc;--card:#111a2b;--line:#22324a;--brand:#0c3b5d;--accent:#e6b800}
@@ -59,30 +59,30 @@
     <section class="card span-4">
       <h2 style="margin:0 0 8px">Paramètres</h2>
       <div id="err" class="muted" style="display:none;color:#ffd7db;background:#3b0c12;border:1px solid #641a22;padding:8px;border-radius:8px"></div>
-      <label>Besoin (L/jour) <input id="demand" value="200"></label>
-      <label>Prix eau (€/L) <input id="bottle" value="0,60"></label>
-      <label>Jours/an <input id="days" value="365"></label>
-      <label>kWh/L du GEA <input id="kwhL" value="0,35"></label>
-      <label>Disponibilité (0–1) <input id="uptime" value="0,95"></label>
-      <label>Facteur climat (0–1) <input id="climate" value="1,00"></label>
+      <label>Besoin (L/jour) <input id="demand" value="200" inputmode="decimal"></label>
+      <label>Prix eau (€/L) <input id="bottle" value="0,60" inputmode="decimal"></label>
+      <label>Jours/an <input id="days" value="365" inputmode="numeric"></label>
+      <label>kWh/L du GEA <input id="kwhL" value="0,35" inputmode="decimal"></label>
+      <label>Disponibilité (0–1) <input id="uptime" value="0,95" inputmode="decimal"></label>
+      <label>Facteur climat (0–1) <input id="climate" value="1,00" inputmode="decimal"></label>
 
-      <label>CAPEX AWG (€) <input id="capex_awg" value="10000"></label>
-      <label>Installation (€) <input id="install" value="1000"></label>
-      <label>Maintenance/an (€) <input id="maint" value="1000"></label>
-      <label>Prix réseau (€/kWh) <input id="grid" value="0,25"></label>
-      <label>PV kWc <input id="pvkwp" value="5"></label>
-      <label>Rendement PV (kWh/kWc/an) <input id="pvyield" value="950"></label>
-      <label>CAPEX PV (€/kWc) <input id="pvcap" value="1200"></label>
+      <label>CAPEX AWG (€) <input id="capex_awg" value="10000" inputmode="decimal"></label>
+      <label>Installation (€) <input id="install" value="1000" inputmode="decimal"></label>
+      <label>Maintenance/an (€) <input id="maint" value="1000" inputmode="decimal"></label>
+      <label>Prix réseau (€/kWh) <input id="grid" value="0,25" inputmode="decimal"></label>
+      <label>PV kWc <input id="pvkwp" value="5" inputmode="decimal"></label>
+      <label>Rendement PV (kWh/kWc/an) <input id="pvyield" value="950" inputmode="decimal"></label>
+      <label>CAPEX PV (€/kWc) <input id="pvcap" value="1200" inputmode="decimal"></label>
 
-      <label>Durée projet (ans) <input id="years" value="10"></label>
-      <label>Taux actualisation <input id="disc" value="0,08"></label>
+      <label>Durée projet (ans) <input id="years" value="10" inputmode="numeric"></label>
+      <label>Taux actualisation <input id="disc" value="0,08" inputmode="decimal"></label>
 
-      <label>Plastique (g/L) <input id="plastg" value="20"></label>
-      <label>CO₂ plastique (kg/kg) <input id="pco2" value="2,7"></label>
-      <label>CO₂ réseau (kg/kWh) <input id="gco2" value="0,23"></label>
+      <label>Plastique (g/L) <input id="plastg" value="20" inputmode="decimal"></label>
+      <label>CO₂ plastique (kg/kg) <input id="pco2" value="2,7" inputmode="decimal"></label>
+      <label>CO₂ réseau (kg/kWh) <input id="gco2" value="0,23" inputmode="decimal"></label>
 
       <div class="row" style="margin-top:10px">
-        <button class="btn primary" id="calcBtn">Calculer</button>
+        <button class="btn primary" id="calcBtn" type="button" onclick="run()">Calculer</button>
       </div>
       <p class="muted">Décimales : virgule ou point acceptés.</p>
     </section>
@@ -249,14 +249,17 @@ function run(){
   }
 }
 
+// Double ceinture : click + appel direct
 document.getElementById('calcBtn').addEventListener('click', run);
 
-// Enregistre le Service Worker pour le mode "app" hors-ligne
-if('serviceWorker' in navigator){
+// Service Worker : path correct sous GitHub Pages
+(function(){
+  if (!('serviceWorker' in navigator)) return;
+  const base = location.pathname.split('/').slice(0,2).join('/'); // ex: /CalculGEA
   window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('/sw.js?v=4').catch(console.warn);
+    navigator.serviceWorker.register(`${base}/sw.js?v=6`).catch(console.warn);
   });
-}
+})();
 </script>
 </body>
 </html>
