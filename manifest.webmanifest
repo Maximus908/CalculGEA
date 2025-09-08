@@ -1,12 +1,12 @@
 {
   "name": "CalculGEA — AERMABE",
   "short_name": "CalculGEA",
-  "start_url": "/index.html",
-  "scope": "/",
+  "start_url": "/CalculGEA/index.html",
+  "scope": "/CalculGEA/",
   "display": "standalone",
   "background_color": "#0b1220",
   "theme_color": "#0c3b5d",
   "icons": [
-    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
+    { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
   ]
 }
