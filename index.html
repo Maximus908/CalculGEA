@@ -1,181 +1,25 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>CalculGEA — AERYSGIN</title>
-
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="manifest" href="manifest.webmanifest?v=11">
-
-<style>
-  :root{--bg:#0b1220;--fg:#f7f9fc;--muted:#a9b8cc;--card:#111a2b;--line:#22324a;--brand:#0c3b5d;--accent:#e6b800}
-  *{box-sizing:border-box} html,body{margin:0}
-  body{background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto}
-  header{position:sticky;top:0;background:linear-gradient(180deg,rgba(12,59,93,.95),rgba(12,59,93,.7));border-bottom:1px solid rgba(255,255,255,.08)}
-  .wrap{max-width:1060px;margin:0 auto;padding:16px}
-  h1{margin:0;font-size:18px}
-  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-top:16px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
-  .span-4{grid-column:span 4}.span-8{grid-column:span 8}.span-12{grid-column:span 12}
-  @media (max-width:900px){.span-4,.span-8,.span-12{grid-column:span 12}}
-  label{display:block;font-size:12px;color:var(--muted);margin:8px 0 6px}
-  input{width:100%;padding:10px 12px;background:#0e1730;color:#fff;border:1px solid var(--line);border-radius:10px;outline:none}
-  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  .btn{padding:11px 14px;border-radius:10px;border:1px solid var(--line);background:#0e1730;color:#fff;cursor:pointer}
-  .primary{background:var(--brand)}
-  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-  .kpi{padding:12px;border:1px dashed var(--line);border-radius:12px}
-  .kpi small{display:block;color:var(--muted)}
-  .kpi b{font-size:18px}
-  .badge{display:inline-block;padding:4px 8px;border-radius:999px;border:1px solid var(--line);font-size:12px;background:#0d1930}
-  .muted{color:var(--muted);font-size:12px}
-  footer{color:var(--muted);text-align:center;padding:14px}
-  @media print {
-    body{background:#fff;color:#000}
-    header, #err, .inputs, .actions-top{display:none!important}
-    .wrap{max-width:900px}
-    .card{border:1px solid #ddd}
-    .print-title{display:block!important;margin:0 0 12px;font-size:20px;font-weight:700;color:#000}
-    .muted{color:#333}
+// sw.js v12 — CalculGEA — AERYSGIN
+const CACHE = 'calculgea-v12';
+const BASE = '/CalculGEA';
+const ASSETS = [
+  `${BASE}/`,
+  `${BASE}/index.html`,
+  `${BASE}/manifest.webmanifest`,
+  `${BASE}/apple-touch-icon.png`
+];
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));
+  self.skipWaiting();
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys().then(keys => Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))
+  );
+  self.clients.claim();
+});
+self.addEventListener('fetch', e => {
+  const url = new URL(e.request.url);
+  if (url.origin === location.origin) {
+    e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
   }
-  .print-title{display:none}
-</style>
-</head>
-<body>
-<header>
-  <div class="wrap row actions-top" style="justify-content:space-between">
-    <div class="row">
-      <div style="width:36px;height:36px;border-radius:8px;background:conic-gradient(from 45deg,var(--brand),var(--accent),var(--brand));margin-right:10px"></div>
-      <div>
-        <h1>CalculGEA — <span style="color:var(--accent)">AERYSGIN</span></h1>
-        <div class="muted">Simulateur ROI & sélection automatique GENAQ</div>
-      </div>
-    </div>
-    <div class="row">
-      <button class="btn" onclick="exportCSV()">Exporter CSV</button>
-      <button class="btn" onclick="window.print()">Exporter PDF</button>
-    </div>
-  </div>
-</header>
-
-<main class="wrap">
-  <h2 class="print-title">CalculGEA — AERYSGIN · Résultats</h2>
-  <div class="grid">
-    <section class="card span-4 inputs">
-      <h2 style="margin:0 0 8px">Informations client</h2>
-      <label>Société <input id="company" placeholder="Nom de la société"></label>
-      <label>Nom et prénom <input id="clientName" placeholder="Nom Prénom"></label>
-      <label>Fonction <input id="clientRole" placeholder="Fonction"></label>
-
-      <h2 style="margin:16px 0 8px">Paramètres</h2>
-      <div id="err" class="muted" style="display:none;color:#ffd7db;background:#3b0c12;border:1px solid #641a22;padding:8px;border-radius:8px"></div>
-
-      <!-- Paramètres existants -->
-      <label>Besoin (L/jour) <input id="demand" value="200"></label>
-      <label>Prix eau (€/L) <input id="bottle" value="0,60"></label>
-      <label>Jours/an <input id="days" value="365"></label>
-      <label>kWh/L du GEA <input id="kwhL" value="0,35"></label>
-      <label>Disponibilité (0–1) <input id="uptime" value="0,95"></label>
-      <label>Facteur climat (0–1) <input id="climate" value="1,00"></label>
-
-      <label>CAPEX AWG (€) <input id="capex_awg" value="10000"></label>
-      <label>Installation (€) <input id="install" value="1000"></label>
-      <label>Maintenance/an (€) <input id="maint" value="1000"></label>
-      <label>Prix réseau (€/kWh) <input id="grid" value="0,25"></label>
-      <label>PV kWc <input id="pvkwp" value="5"></label>
-      <label>Rendement PV (kWh/kWc/an) <input id="pvyield" value="950"></label>
-      <label>CAPEX PV (€/kWc) <input id="pvcap" value="1200"></label>
-
-      <label>Durée projet (ans) <input id="years" value="10"></label>
-      <label>Taux actualisation <input id="disc" value="0,08"></label>
-
-      <label>Plastique (g/L) <input id="plastg" value="20"></label>
-      <label>CO₂ plastique (kg/kg) <input id="pco2" value="2,7"></label>
-      <label>CO₂ réseau (kg/kWh) <input id="gco2" value="0,23"></label>
-
-      <div class="row" style="margin-top:10px">
-        <button class="btn primary" id="calcBtn" type="button" onclick="run()">Calculer</button>
-      </div>
-    </section>
-
-    <section class="card span-8">
-      <h2 style="margin:0 0 8px">Résumé exécutif</h2>
-      <div id="clientInfo" class="muted"></div>
-      <div class="kpis" id="summary"><p class="muted">Clique “Calculer”.</p></div>
-    </section>
-
-    <section class="card span-12">
-      <h2 style="margin:0 0 8px">Finance</h2>
-      <div id="finance"><p class="muted">Les résultats s’affichent ici.</p></div>
-    </section>
-
-    <section class="card span-6">
-      <h2 style="margin:0 0 8px">Impacts</h2>
-      <div id="impacts"><p class="muted">Après calcul.</p></div>
-    </section>
-
-    <section class="card span-6">
-      <h2 style="margin:0 0 8px">Détails modèle</h2>
-      <div id="details"><p class="muted">Après calcul.</p></div>
-    </section>
-  </div>
-</main>
-
-<footer>© AERYSGIN — Outil estimatif ; performances réelles dépendantes du site et du climat.</footer>
-
-<script>
-// utilitaires
-const euro = n => (Math.round(n)||0).toLocaleString('fr-FR')+' €';
-const fmt  = (n,d=1)=> Number(n||0).toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d});
-
-// ... mêmes fonctions de calcul (npv, irr, recommend, run) qu’avant ...
-
-let lastCalc = null;
-
-function run(){
-  // récupérer infos client
-  const company = document.getElementById('company').value.trim();
-  const clientName = document.getElementById('clientName').value.trim();
-  const clientRole = document.getElementById('clientRole').value.trim();
-
-  // ... calcul identique à v10 ...
-
-  // stocker infos client dans lastCalc
-  lastCalc.client = {company, clientName, clientRole};
-
-  // affichage résumé
-  const infoEl = document.getElementById('clientInfo');
-  infoEl.innerHTML = `
-    <b>Société :</b> ${company || '-'}<br>
-    <b>Client :</b> ${clientName || '-'} (${clientRole || '-'})
-  `;
-
-  // ... affichage KPIs comme avant ...
-}
-
-function exportCSV(){
-  if(!lastCalc){ alert("Faites un calcul d’abord."); return; }
-  const d = lastCalc;
-  const rows = [
-    ['CalculGEA — AERYSGIN'],
-    ['Société', d.client.company],
-    ['Client', d.client.clientName],
-    ['Fonction', d.client.clientRole],
-    [],
-    ['Modèle recommandé', d.model.name],
-    ['Type', d.model.type],
-    // ... puis le reste identique à v10 ...
-  ];
-  const csv = rows.map(r=>r.join(';')).join('\r\n');
-  const blob = new Blob([csv], {type:'text/csv'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'calculgea_client.csv';
-  a.click();
-}
-</script>
-</body>
-</html>
+});
