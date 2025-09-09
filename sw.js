@@ -1,5 +1,5 @@
-// sw.js v9 — CalculGEA — AERYSGIN
-const CACHE = 'calculgea-v9';
+// sw.js v11 — CalculGEA — AERYSGIN
+const CACHE = 'calculgea-v11';
 const BASE = '/CalculGEA';
 const ASSETS = [
   `${BASE}/`,
@@ -7,19 +7,26 @@ const ASSETS = [
   `${BASE}/manifest.webmanifest`,
   `${BASE}/apple-touch-icon.png`
 ];
-self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));
+
+self.addEventListener('install', (e) => {
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)));
   self.skipWaiting();
 });
-self.addEventListener('activate', e => {
+
+self.addEventListener('activate', (e) => {
   e.waitUntil(
-    caches.keys().then(keys => Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
+    )
   );
   self.clients.claim();
 });
-self.addEventListener('fetch', e => {
+
+self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
   if (url.origin === location.origin) {
-    e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+    e.respondWith(
+      caches.match(e.request).then((r) => r || fetch(e.request))
+    );
   }
 });
