@@ -3,18 +3,12 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>CalculGEA — AERYSGIN</title>
-
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="manifest" href="manifest.webmanifest?v=13">
-
+<title>CalculGEA — AERYSGIN (Mode Sécurisé v14)</title>
 <style>
   :root{--bg:#0b1220;--fg:#f7f9fc;--muted:#a9b8cc;--card:#111a2b;--line:#22324a;--brand:#0c3b5d;--accent:#e6b800}
   *{box-sizing:border-box} html,body{margin:0}
-  body{background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto}
-  header{position:sticky;top:0;background:linear-gradient(180deg,rgba(12,59,93,.95),rgba(12,59,93,.7));border-bottom:1px solid rgba(255,255,255,.08)}
+  body{background:var(--bg);color:var(--fg);font:15px/1.5 system-ui}
+  header{position:sticky;top:0;background:linear-gradient(180deg,rgba(12,59,93,.95),rgba(12,59,93,.7))}
   .wrap{max-width:1060px;margin:0 auto;padding:16px}
   h1{margin:0;font-size:18px}
   .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-top:16px}
@@ -22,7 +16,7 @@
   .span-4{grid-column:span 4}.span-8{grid-column:span 8}.span-12{grid-column:span 12}
   @media (max-width:900px){.span-4,.span-8,.span-12{grid-column:span 12}}
   label{display:block;font-size:12px;color:var(--muted);margin:8px 0 6px}
-  input{width:100%;padding:10px 12px;background:#0e1730;color:#fff;border:1px solid var(--line);border-radius:10px;outline:none}
+  input{width:100%;padding:10px 12px;background:#0e1730;color:#fff;border:1px solid var(--line);border-radius:10px}
   .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
   .btn{padding:11px 14px;border-radius:10px;border:1px solid var(--line);background:#0e1730;color:#fff;cursor:pointer}
   .primary{background:var(--brand)}
@@ -32,106 +26,64 @@
   .kpi b{font-size:18px}
   .badge{display:inline-block;padding:4px 8px;border-radius:999px;border:1px solid var(--line);font-size:12px;background:#0d1930}
   .muted{color:var(--muted);font-size:12px}
-  footer{color:var(--muted);text-align:center;padding:14px}
-  @media print {
-    body{background:#fff;color:#000}
-    header, #err, .inputs, .actions-top{display:none!important}
-    .wrap{max-width:900px}
-    .card{border:1px solid #ddd}
-    .print-title{display:block!important;margin:0 0 12px;font-size:20px;font-weight:700;color:#000}
-    .muted{color:#333}
-  }
-  .print-title{display:none}
 </style>
 </head>
 <body>
 <header>
-  <div class="wrap row actions-top" style="justify-content:space-between">
+  <div class="wrap row" style="justify-content:space-between">
     <div class="row">
       <div style="width:36px;height:36px;border-radius:8px;background:conic-gradient(from 45deg,var(--brand),var(--accent),var(--brand));margin-right:10px"></div>
       <div>
         <h1>CalculGEA — <span style="color:var(--accent)">AERYSGIN</span></h1>
-        <div class="muted">Simulateur ROI & sélection automatique GENAQ</div>
+        <div class="muted">Mode Sécurisé v14 (sans PWA)</div>
       </div>
     </div>
     <div class="row">
-      <button class="btn" onclick="exportCSV()">Exporter CSV</button>
-      <button class="btn" onclick="window.print()">Exporter PDF</button>
+      <button class="btn primary" id="calcBtn" type="button">Calculer</button>
     </div>
   </div>
 </header>
 
 <main class="wrap">
-  <h2 class="print-title">CalculGEA — AERYSGIN · Résultats</h2>
+  <div id="err" class="muted" style="display:none;color:#ffd7db;background:#3b0c12;border:1px solid #641a22;padding:8px;border-radius:8px"></div>
   <div class="grid">
-    <section class="card span-4 inputs">
-      <h2 style="margin:0 0 8px">Informations client</h2>
-      <label>Société <input id="company" placeholder="Nom de la société"></label>
-      <label>Nom et prénom <input id="clientName" placeholder="Nom Prénom"></label>
-      <label>Fonction <input id="clientRole" placeholder="Fonction"></label>
-
-      <h2 style="margin:16px 0 8px">Paramètres</h2>
-      <div id="err" class="muted" style="display:none;color:#ffd7db;background:#3b0c12;border:1px solid #641a22;padding:8px;border-radius:8px"></div>
-
+    <section class="card span-4">
+      <h2 style="margin:0 0 8px">Paramètres (test)</h2>
       <label>Besoin (L/jour) <input id="demand" value="200"></label>
       <label>Prix eau (€/L) <input id="bottle" value="0,60"></label>
       <label>Jours/an <input id="days" value="365"></label>
       <label>kWh/L du GEA <input id="kwhL" value="0,35"></label>
       <label>Disponibilité (0–1) <input id="uptime" value="0,95"></label>
       <label>Facteur climat (0–1) <input id="climate" value="1,00"></label>
-
       <label>CAPEX AWG (€) <input id="capex_awg" value="10000"></label>
       <label>Installation (€) <input id="install" value="1000"></label>
       <label>Maintenance/an (€) <input id="maint" value="1000"></label>
       <label>Prix réseau (€/kWh) <input id="grid" value="0,25"></label>
       <label>PV kWc <input id="pvkwp" value="5"></label>
-      <label>Rendement PV (kWh/kWc/an) <input id="pvyield" value="950"></label>
+      <label>Rdt PV (kWh/kWc/an) <input id="pvyield" value="950"></label>
       <label>CAPEX PV (€/kWc) <input id="pvcap" value="1200"></label>
-
       <label>Durée projet (ans) <input id="years" value="10"></label>
       <label>Taux actualisation <input id="disc" value="0,08"></label>
-
       <label>Plastique (g/L) <input id="plastg" value="20"></label>
       <label>CO₂ plastique (kg/kg) <input id="pco2" value="2,7"></label>
       <label>CO₂ réseau (kg/kWh) <input id="gco2" value="0,23"></label>
-
-      <div class="row" style="margin-top:10px">
-        <button class="btn primary" id="calcBtn" type="button" onclick="run()">Calculer</button>
-      </div>
-      <p class="muted">Décimales : virgule ou point acceptés.</p>
     </section>
 
     <section class="card span-8">
       <h2 style="margin:0 0 8px">Résumé exécutif</h2>
-      <div id="clientInfo" class="muted"></div>
       <div class="kpis" id="summary"><p class="muted">Clique “Calculer”.</p></div>
-    </section>
-
-    <section class="card span-12">
-      <h2 style="margin:0 0 8px">Finance</h2>
-      <div id="finance"><p class="muted">Les résultats s’affichent ici.</p></div>
-    </section>
-
-    <section class="card span-6">
-      <h2 style="margin:0 0 8px">Impacts</h2>
-      <div id="impacts"><p class="muted">Après calcul.</p></div>
-    </section>
-
-    <section class="card span-6">
-      <h2 style="margin:0 0 8px">Détails modèle</h2>
-      <div id="details"><p class="muted">Après calcul.</p></div>
+      <h2 style="margin:16px 0 8px">Finance</h2>
+      <div id="finance"><p class="muted">—</p></div>
+      <h2 style="margin:16px 0 8px">Impacts</h2>
+      <div id="impacts"><p class="muted">—</p></div>
     </section>
   </div>
 </main>
 
-<footer>© AERYSGIN — Outil estimatif ; performances réelles dépendantes du site et du climat. · <span id="ver"></span></footer>
-
 <script>
-// ===== Version affichée =====
-const APP_VERSION = 'v13';
-document.getElementById('ver').textContent = APP_VERSION;
+console.log('JS chargé — Mode Sécurisé v14');
 
-// ===== Modèles =====
+// Modèles
 const MODELS = [
   {name:"Stratus S50",   lpd:52,   type:"Distributeur"},
   {name:"Stratus S200",  lpd:200,  type:"Distributeur"},
@@ -139,39 +91,16 @@ const MODELS = [
   {name:"Cumulus C5000", lpd:5192, type:"Container/Industrial"},
 ];
 
-// ===== Utils =====
-const num  = (id, def=0) => {
-  const raw = (document.getElementById(id).value||"").toString();
-  const v = parseFloat(raw.replace(/\s/g,'').replace(',', '.'));
-  return isFinite(v) ? v : def;
-};
+// Utils
+const num  = (id, def=0)=>{const r=(document.getElementById(id).value||"").toString(); const v=parseFloat(r.replace(/\s/g,'').replace(',', '.')); return isFinite(v)?v:def;}
 const euro = n => (Math.round(n)||0).toLocaleString('fr-FR')+' €';
 const fmt  = (n,d=1)=> Number(n||0).toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d});
-
-function npv(rate, cash){ let s=cash[0]; for(let t=1;t<cash.length;t++) s += cash[t]/Math.pow(1+rate,t); return s; }
-function irr(cash, guess=0.1){
-  let r=guess;
-  for(let i=0;i<200;i++){
-    let f=0,df=0;
-    for(let t=0;t<cash.length;t++){ f += cash[t]/Math.pow(1+r,t); if(t>0) df += -t*cash[t]/Math.pow(1+r,t+1); }
-    if(!isFinite(df)||df===0) break; const nr = r - f/df; if(!isFinite(nr)) break; if(Math.abs(nr-r)<1e-10){r=nr;break;} r=nr;
-  }
-  return r;
-}
-function recommend(requiredLPD, derate){
-  for(const m of MODELS){ if(m.lpd*derate >= requiredLPD) return m; }
-  return {name:"AWGplant (projet sur-mesure)", lpd:100000, type:"Industriel"};
-}
-
-// ===== Calcul =====
-let lastCalc = null;
+function npv(rate, cash){let s=cash[0]; for(let t=1;t<cash.length;t++) s += cash[t]/Math.pow(1+rate,t); return s;}
+function irr(cash, g=0.1){let r=g; for(let i=0;i<200;i++){let f=0,df=0; for(let t=0;t<cash.length;t++){f+=cash[t]/Math.pow(1+r,t); if(t>0) df+=-t*cash[t]/Math.pow(1+r,t+1);} if(!isFinite(df)||df===0) break; const nr=r-f/df; if(!isFinite(nr)) break; if(Math.abs(nr-r)<1e-10){r=nr;break;} r=nr;} return r;}
+function recommend(requiredLPD, derate){for(const m of MODELS){if(m.lpd*derate>=requiredLPD) return m;} return {name:"AWGplant (projet sur-mesure)", lpd:100000, type:"Industriel"};}
 
 function run(){
   try{
-    const company    = (document.getElementById('company').value||'').trim();
-    const clientName = (document.getElementById('clientName').value||'').trim();
-    const clientRole = (document.getElementById('clientRole').value||'').trim();
-
     const demand=num('demand',200), bottle=num('bottle',0.60), days=num('days',365);
     const kwhL=num('kwhL',0.35), uptime=num('uptime',0.95), climate=num('climate',1.00);
     const capex_awg=num('capex_awg',10000), install=num('install',1000), maint=num('maint',1000);
@@ -218,158 +147,35 @@ function run(){
     const co2PV = gridWithPV*gco2;
     const co2No = awgKwh*gco2;
 
-    lastCalc = {
-      client:{company, clientName, clientRole},
-      inputs:{demand,bottle,days,kwhL,uptime,climate,capex_awg,install,maint,grid,pvkwp,pvyield,pvcap,years,disc,plastg,pco2,gco2},
-      model:choice, requiredLPD, annualLiters,
-      finance:{capexPV,capexNo,opexPV,opexNo,savePV,saveNo,npvPV,npvNo,irrPV,irrNo,payPV,payNo},
-      impact:{plastKg,plastCO2,co2PV,co2No}
-    };
-
-    document.getElementById('err').style.display='none';
-    document.getElementById('clientInfo').innerHTML =
-      `<b>Société :</b> ${company || '-'} &nbsp;·&nbsp; <b>Client :</b> ${clientName || '-'} (${clientRole || '-'})`;
-
     document.getElementById('summary').innerHTML = `
       <div class="kpi"><small>Modèle recommandé</small><b>${choice.name}</b><div class="badge">${choice.type}</div></div>
       <div class="kpi"><small>Litres/an</small><b>${fmt(annualLiters,0)} L</b></div>
       <div class="kpi"><small>Économies annuelles (max)</small><b>${euro(Math.max(savePV, saveNo))}</b></div>
       <div class="kpi"><small>Besoin corrigé</small><b>${fmt(requiredLPD,0)} L/j</b></div>
     `;
-
     document.getElementById('finance').innerHTML = `
-      <table style="width:100%;border-collapse:collapse;border:1px solid var(--line);border-radius:10px;overflow:hidden">
-        <thead><tr style="background:#0E1A33">
-          <th style="text-align:left;padding:10px">Indicateur</th>
-          <th style="text-align:right;padding:10px">Avec PV</th>
-          <th style="text-align:right;padding:10px">Sans PV</th>
-        </tr></thead>
-        <tbody>
-          <tr><td style="padding:10px">CAPEX total</td><td style="padding:10px;text-align:right">${euro(capexPV)}</td><td style="padding:10px;text-align:right">${euro(capexNo)}</td></tr>
-          <tr><td style="padding:10px">OPEX annuel</td><td style="padding:10px;text-align:right">${euro(opexPV)}</td><td style="padding:10px;text-align:right">${euro(opexNo)}</td></tr>
-          <tr><td style="padding:10px">Économies/an</td><td style="padding:10px;text-align:right">${euro(savePV)}</td><td style="padding:10px;text-align:right">${euro(saveNo)}</td></tr>
-          <tr><td style="padding:10px">Payback (ans)</td><td style="padding:10px;text-align:right">${isFinite(payPV)?fmt(payPV,1):'—'}</td><td style="padding:10px;text-align:right">${isFinite(payNo)?fmt(payNo,1):'—'}</td></tr>
-          <tr><td style="padding:10px">NPV (${years} ans)</td><td style="padding:10px;text-align:right">${euro(npvPV)}</td><td style="padding:10px;text-align:right">${euro(npvNo)}</td></tr>
-          <tr><td style="padding:10px">IRR</td><td style="padding:10px;text-align:right">${isFinite(irrPV)?(irrPV*100).toFixed(1)+' %':'—'}</td><td style="padding:10px;text-align:right">${isFinite(irrNo)?(irrNo*100).toFixed(1):'—'} %</td></tr>
-        </tbody>
-      </table>
+      <div class="kpi"><small>CAPEX total (PV / sans)</small><b>${euro(capexPV)} / ${euro(capexNo)}</b></div>
+      <div class="kpi"><small>OPEX annuel (PV / sans)</small><b>${euro(opexPV)} / ${euro(opexNo)}</b></div>
+      <div class="kpi"><small>NPV ${years} ans (PV / sans)</small><b>${euro(npvPV)} / ${euro(npvNo)}</b></div>
+      <div class="kpi"><small>IRR (PV / sans)</small><b>${isFinite(irrPV)?(irrPV*100).toFixed(1)+'%':'—'} / ${isFinite(irrNo)?(irrNo*100).toFixed(1)+'%':'—'}</b></div>
     `;
-
     document.getElementById('impacts').innerHTML = `
       <div class="kpi"><b>Plastique évité :</b> ${fmt(plastKg,1)} kg/an</div>
       <div class="kpi"><b>CO₂ plastique évité :</b> ${fmt(plastCO2,0)} kg</div>
       <div class="kpi"><b>CO₂ réseau (avec PV) :</b> ${fmt(co2PV,0)} kg</div>
       <div class="kpi"><b>CO₂ réseau (sans PV) :</b> ${fmt(co2No,0)} kg</div>
     `;
-
-    document.getElementById('details').innerHTML = `
-      <div class="kpi"><b>Modèle :</b> ${choice.name}</div>
-      <div class="kpi"><b>Type :</b> ${choice.type}</div>
-      <div class="kpi"><b>Capacité nominale :</b> ${fmt(choice.lpd,0)} L/j</div>
-      <div class="kpi"><b>Climat pris en compte :</b> ${fmt(climate*100,0)} %</div>
-      <div class="kpi"><b>Disponibilité :</b> ${fmt(uptime*100,0)} %</div>
-    `;
   }catch(e){
-    const el = document.getElementById('err');
-    el.textContent = 'Erreur JavaScript : ' + (e.message || 'inconnue');
-    el.style.display='block';
+    const er = document.getElementById('err');
+    er.textContent = 'Erreur JavaScript : ' + (e.message || 'inconnue');
+    er.style.display='block';
     console.error(e);
   }
 }
-// >>> Assure l’accessibilité globale pour onclick
-window.run = run;
 
-// ===== Export CSV =====
-function exportCSV(){
-  if(!lastCalc){
-    const el = document.getElementById('err');
-    el.textContent = 'Veuillez d’abord lancer un calcul.';
-    el.style.display='block';
-    return;
-  }
-  const d = lastCalc;
-  const rows = [
-    ['CalculGEA — AERYSGIN', APP_VERSION],
-    ['Société', d.client.company||''],
-    ['Client', d.client.clientName||''],
-    ['Fonction', d.client.clientRole||''],
-    [],
-    ['Modèle recommandé', d.model.name],
-    ['Type', d.model.type],
-    ['Besoin corrigé (L/j)', Math.round(d.requiredLPD)],
-    ['Litres fournis/an', Math.round(d.annualLiters)],
-    [],
-    ['ENTRÉES'],
-    ['Besoin (L/j)', d.inputs.demand],
-    ['Prix eau (€/L)', d.inputs.bottle],
-    ['Jours/an', d.inputs.days],
-    ['kWh/L', d.inputs.kwhL],
-    ['Disponibilité', d.inputs.uptime],
-    ['Facteur climat', d.inputs.climate],
-    ['CAPEX AWG (€)', d.inputs.capex_awg],
-    ['Installation (€)', d.inputs.install],
-    ['Maintenance/an (€)', d.inputs.maint],
-    ['Prix réseau (€/kWh)', d.inputs.grid],
-    ['PV kWc', d.inputs.pvkwp],
-    ['Rdt PV (kWh/kWc/an)', d.inputs.pvyield],
-    ['CAPEX PV (€/kWc)', d.inputs.pvcap],
-    ['Durée (ans)', d.inputs.years],
-    ['Taux actualisation', d.inputs.disc],
-    ['Plastique (g/L)', d.inputs.plastg],
-    ['CO2 plastique (kg/kg)', d.inputs.pco2],
-    ['CO2 réseau (kg/kWh)', d.inputs.gco2],
-    [],
-    ['FINANCE', 'Avec PV', 'Sans PV'],
-    ['CAPEX total (€)', Math.round(d.finance.capexPV), Math.round(d.finance.capexNo)],
-    ['OPEX/an (€)', Math.round(d.finance.opexPV), Math.round(d.finance.opexNo)],
-    ['Économies/an (€)', Math.round(d.finance.savePV), Math.round(d.finance.saveNo)],
-    ['Payback (ans)', isFinite(d.finance.payPV)?d.finance.payPV.toFixed(1):'', isFinite(d.finance.payNo)?d.finance.payNo.toFixed(1):''],
-    ['NPV (€)', Math.round(d.finance.npvPV), Math.round(d.finance.npvNo)],
-    ['IRR (%)', isFinite(d.finance.irrPV)?(d.finance.irrPV*100).toFixed(1):'', isFinite(d.finance.irrNo)?(d.finance.irrNo*100).toFixed(1):''],
-    [],
-    ['IMPACTS'],
-    ['Plastique évité (kg/an)', d.impact.plastKg.toFixed(1)],
-    ['CO2 plastique évité (kg)', d.impact.plastCO2.toFixed(0)],
-    ['CO2 réseau avec PV (kg)', d.impact.co2PV.toFixed(0)],
-    ['CO2 réseau sans PV (kg)', d.impact.co2No.toFixed(0)],
-  ];
-  const csv = rows.map(r=>r.map(x=>String(x).replace(/"/g,'""')).join(';')).join('\r\n');
-  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `calculgea_${Date.now()}.csv`;
-  a.click();
-}
-
-// ===== SW : reset si ?debugsw=1, puis registre v13 =====
-(function(){
-  if (!('serviceWorker' in navigator)) return;
-  const params = new URLSearchParams(location.search);
-  const base = location.pathname.split('/').slice(0,2).join('/'); // /CalculGEA
-
-  async function resetSW(){
-    const regs = await navigator.serviceWorker.getRegistrations();
-    await Promise.all(regs.map(r=>r.unregister()));
-    if ('caches' in window) {
-      const keys = await caches.keys();
-      await Promise.all(keys.map(k=>caches.delete(k)));
-    }
-    console.log('SW reset done');
-  }
-
-  window.addEventListener('load', async ()=>{
-    if (params.get('debugsw') === '1') {
-      await resetSW();
-    }
-    navigator.serviceWorker.register(`${base}/sw.js?v=13`).catch(console.warn);
-  });
-})();
-
-// Affichage erreurs JS (debug iPhone)
-window.addEventListener('error', (e)=>{
-  const el = document.getElementById('err');
-  el.textContent = 'Erreur JavaScript : ' + (e.message || 'inconnue');
-  el.style.display='block';
+document.addEventListener('DOMContentLoaded', ()=>{
+  document.getElementById('calcBtn').addEventListener('click', run);
+  console.log('Handler bouton prêt');
 });
 </script>
 </body>
