@@ -37,17 +37,63 @@
   .muted{color:var(--muted);font-size:12px}
   footer{color:var(--muted);text-align:center;padding:14px}
 
-  /* Impression/PDF : forcer fond blanc + texte noir (corrige iOS PDF noir) */
-  @media print {
-    :root{color-scheme: light;}
-    *{-webkit-print-color-adjust: exact;print-color-adjust: exact}
-    body, header, main, footer, .card{background:#fff !important;color:#000 !important}
-    .card{border:1px solid #999 !important}
-    .kpi{border-color:#bbb !important}
-    .badge{border-color:#999 !important;background:#fff !important;color:#000 !important}
-    .btn, .actions-top, .inputs #scenarioWrap{display:none !important}
-    a{color:#000 !important}
+/* Impression/PDF — Thème clair & pro (pastel bleu) */
+@media print {
+  :root{ color-scheme: light; }
+  *{ -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  /* page blanche, texte noir */
+  html, body, header, main, footer {
+    background:#fff !important;
+    color:#000 !important;
   }
+
+  /* cartes et sections */
+  .card{
+    background:#f7fbff !important;             /* léger bleu très clair */
+    border:1px solid #cfe0f3 !important;
+    color:#000 !important;
+    box-shadow:none !important;
+  }
+
+  /* KPI en contours doux */
+  .kpi{
+    background:#fff !important;
+    border:1px dashed #9dbfe8 !important;
+    color:#000 !important;
+  }
+
+  /* badges lisibles */
+  .badge{
+    background:#e6f1ff !important;
+    border:1px solid #7aaee8 !important;
+    color:#003366 !important;
+  }
+
+  /* champs : fond blanc, bord clair, texte noir */
+  input, select, textarea{
+    background:#fff !important;
+    color:#000 !important;
+    border:1px solid #cfd9e6 !important;
+    box-shadow:none !important;
+  }
+
+  /* titres et textes secondaires */
+  h1,h2,h3{ color:#003366 !important; }
+  .muted{ color:#555 !important; }
+
+  /* tables finance : lignes fines, en clair */
+  table{ border-color:#cfe0f3 !important; }
+  thead tr{ background:#eaf3ff !important; color:#003366 !important; }
+  td,th{ border-bottom:1px solid #e1ecf7 !important; }
+
+  /* on cache les boutons et la barre du haut dans le PDF */
+  .btn, .actions-top { display:none !important; }
+
+  /* marges imprimées */
+  @page { margin: 14mm; }
+}
+  
 </style>
 </head>
 <body>
