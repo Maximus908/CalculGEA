@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>CalculGEA — AERYSGIN (v17)</title>
+<title>CalculGEA — AERYSGIN (v18)</title>
 
 <!-- PWA iPhone -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="manifest" href="manifest.webmanifest?v=17">
+<link rel="manifest" href="manifest.webmanifest?v=18">
 <meta name="theme-color" content="#0c3b5d"/>
 
 <style>
@@ -24,7 +24,7 @@
   .span-4{grid-column:span 4}.span-6{grid-column:span 6}.span-8{grid-column:span 8}.span-12{grid-column:span 12}
   @media (max-width:900px){.span-4,.span-6,.span-8,.span-12{grid-column:span 12}}
   label{display:block;font-size:12px;color:var(--muted);margin:8px 0 6px}
-  input{width:100%;padding:10px 12px;background:#0e1730;color:#fff;border:1px solid var(--line);border-radius:10px;outline:none}
+  input, select{width:100%;padding:10px 12px;background:#0e1730;color:#fff;border:1px solid var(--line);border-radius:10px;outline:none}
   .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
   .btn{padding:11px 14px;border-radius:10px;border:1px solid var(--line);background:#0e1730;color:#fff;cursor:pointer;opacity:.7}
   .btn.enabled{opacity:1}
@@ -36,12 +36,17 @@
   .badge{display:inline-block;padding:4px 8px;border-radius:999px;border:1px solid var(--line);font-size:12px;background:#0d1930}
   .muted{color:var(--muted);font-size:12px}
   footer{color:var(--muted);text-align:center;padding:14px}
+
+  /* Impression/PDF : forcer fond blanc + texte noir (corrige iOS PDF noir) */
   @media print {
-    body{background:#fff;color:#000}
-    header,#err,.inputs,.actions-top{display:none!important}
-    .wrap{max-width:900px}
-    .card{border:1px solid #ddd}
-    .muted{color:#333}
+    :root{color-scheme: light;}
+    *{-webkit-print-color-adjust: exact;print-color-adjust: exact}
+    body, header, main, footer, .card{background:#fff !important;color:#000 !important}
+    .card{border:1px solid #999 !important}
+    .kpi{border-color:#bbb !important}
+    .badge{border-color:#999 !important;background:#fff !important;color:#000 !important}
+    .btn, .actions-top, .inputs #scenarioWrap{display:none !important}
+    a{color:#000 !important}
   }
 </style>
 </head>
@@ -52,7 +57,7 @@
       <div style="width:36px;height:36px;border-radius:8px;background:conic-gradient(from 45deg,var(--brand),var(--accent),var(--brand));margin-right:10px"></div>
       <div>
         <h1>CalculGEA — <span style="color:var(--accent)">AERYSGIN</span></h1>
-        <div class="muted">PWA v17 · Simulateur ROI & sélection automatique GENAQ</div>
+        <div class="muted">PWA v18 · Simulateur ROI & sélection automatique GENAQ</div>
       </div>
     </div>
     <div class="row">
@@ -71,6 +76,19 @@
       <label>Société <input id="company" placeholder="Nom de la société" inputmode="text"></label>
       <label>Nom et prénom <input id="clientName" placeholder="Nom Prénom" inputmode="text"></label>
       <label>Fonction <input id="clientRole" placeholder="Fonction" inputmode="text"></label>
+
+      <div id="scenarioWrap" style="margin-top:12px">
+        <label>Scénario (pré-remplissage)</label>
+        <select id="scenario">
+          <option value="">— Choisir un scénario —</option>
+          <option value="pme">Bureau / PME (50 pers.)</option>
+          <option value="hotel">Hôtel 3★ (80 chambres)</option>
+          <option value="ecole">École (500 élèves)</option>
+          <option value="chantier">Chantier (200 pers.)</option>
+          <option value="secours">Base de secours</option>
+          <option value="village">Village isolé (100 foyers)</option>
+        </select>
+      </div>
 
       <h2 style="margin:16px 0 8px">Paramètres</h2>
       <label>Besoin (L/jour) <input id="demand" value="200" inputmode="decimal"></label>
@@ -142,10 +160,22 @@ const MODELS = [
   {name:"Cumulus C5000", lpd:5192, type:"Container/Industrial"},
 ];
 
+/* ===== Scénarios (pré-remplissage) ===== */
+const SCENARIOS = {
+  pme:     {label:"Bureau / PME (50 pers.)", demand:150, days:250, bottle:0.6, kwhL:0.35, uptime:0.95, climate:1.0, capex_awg:10000, install:1000, maint:1000, grid:0.25, pvkwp:3, pvyield:950, pvcap:1200, years:10, disc:0.08, plastg:20, pco2:2.7, gco2:0.23},
+  hotel:   {label:"Hôtel 3★ (80 chambres)", demand:240, days:365, bottle:0.6, kwhL:0.35, uptime:0.95, climate:1.0, capex_awg:15000, install:2000, maint:1500, grid:0.25, pvkwp:10, pvyield:1000, pvcap:1100, years:12, disc:0.08, plastg:20, pco2:2.7, gco2:0.23},
+  ecole:   {label:"École (500 élèves)",      demand:750, days:180, bottle:0.5, kwhL:0.35, uptime:0.95, climate:1.0, capex_awg:18000, install:1500, maint:1200, grid:0.22, pvkwp:12, pvyield:950,  pvcap:1100, years:10, disc:0.07, plastg:20, pco2:2.7, gco2:0.22},
+  chantier:{label:"Chantier (200 pers.)",    demand:600, days:300, bottle:0.7, kwhL:0.38, uptime:0.90, climate:0.9, capex_awg:16000, install:1500, maint:1600, grid:0.30, pvkwp:15, pvyield:900,  pvcap:1000, years:5,  disc:0.10, plastg:25, pco2:2.7, gco2:0.30},
+  secours: {label:"Base de secours",         demand:500, days:365, bottle:0.8, kwhL:0.36, uptime:0.95, climate:0.95,capex_awg:20000, install:2000, maint:1800, grid:0.28, pvkwp:20, pvyield:1000, pvcap:1000, years:8,  disc:0.09, plastg:25, pco2:2.7, gco2:0.28},
+  village: {label:"Village isolé (100 foyers)", demand:800, days:365, bottle:0.5, kwhL:0.34, uptime:0.95, climate:0.95,capex_awg:25000, install:3000, maint:2000, grid:0.20, pvkwp:25, pvyield:1100, pvcap:900, years:15, disc:0.07, plastg:20, pco2:2.7, gco2:0.20},
+};
+
 /* ===== Utils ===== */
 const num  = (id, def=0)=>{const r=(document.getElementById(id).value||"").toString(); const v=parseFloat(r.replace(/\s/g,'').replace(',', '.')); return isFinite(v)?v:def;}
 const euro = n => (Math.round(n)||0).toLocaleString('fr-FR')+' €';
 const fmt  = (n,d=1)=> Number(n||0).toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const setVal = (id, val)=>{document.getElementById(id).value = (typeof val==='number') ? String(val).replace('.', ',') : val;}
+
 function npv(rate, cash){let s=cash[0]; for(let t=1;t<cash.length;t++) s += cash[t]/Math.pow(1+rate,t); return s;}
 function irr(cash, guess=0.1){let r=guess; for(let i=0;i<200;i++){let f=0,df=0; for(let t=0;t<cash.length;t++){f+=cash[t]/Math.pow(1+r,t); if(t>0) df+=-t*cash[t]/Math.pow(1+r,t+1);} if(!isFinite(df)||df===0) break; const nr=r-f/df; if(!isFinite(nr)) break; if(Math.abs(nr-r)<1e-10){r=nr;break;} r=nr;} return r;}
 function recommend(requiredLPD, derate){for(const m of MODELS){ if(m.lpd*derate >= requiredLPD) return m; } return {name:"AWGplant (projet sur-mesure)", lpd:100000, type:"Industriel"};}
@@ -158,6 +188,7 @@ function run(){
     const company    = (document.getElementById('company').value||'').trim();
     const clientName = (document.getElementById('clientName').value||'').trim();
     const clientRole = (document.getElementById('clientRole').value||'').trim();
+    const scenarioKey = document.getElementById('scenario').value || '';
 
     const demand=num('demand',200), bottle=num('bottle',0.60), days=num('days',365);
     const kwhL=num('kwhL',0.35), uptime=num('uptime',0.95), climate=num('climate',1.00);
@@ -206,6 +237,7 @@ function run(){
     const co2No = awgKwh*gco2;
 
     lastCalc = {
+      scenario: scenarioKey ? SCENARIOS[scenarioKey].label : '',
       client:{company, clientName, clientRole},
       inputs:{demand,bottle,days,kwhL,uptime,climate,capex_awg,install,maint,grid,pvkwp,pvyield,pvcap,years,disc,plastg,pco2,gco2},
       model:choice, requiredLPD, annualLiters,
@@ -216,8 +248,9 @@ function run(){
     document.getElementById('err').style.display='none';
     document.querySelectorAll('#btnCsvTop,#btnPdfTop,#btnCsvBottom,#btnPdfBottom').forEach(b=>b.classList.add('enabled'));
 
+    const scenotxt = lastCalc.scenario ? ` · <span class="badge">${lastCalc.scenario}</span>` : '';
     document.getElementById('clientInfo').innerHTML =
-      `<b>Société :</b> ${company || '-'} &nbsp;·&nbsp; <b>Client :</b> ${clientName || '-'} (${clientRole || '-'})`;
+      `<b>Société :</b> ${company || '-'} &nbsp;·&nbsp; <b>Client :</b> ${clientName || '-'} (${clientRole || '-'})${scenotxt}`;
 
     document.getElementById('summary').innerHTML = `
       <div class="kpi"><small>Modèle recommandé</small><b>${choice.name}</b><div class="badge">${choice.type}</div></div>
@@ -266,11 +299,23 @@ function run(){
   }
 }
 
+/* ===== Appliquer un scénario ===== */
+function applyScenario(key){
+  const s = SCENARIOS[key]; if(!s) return;
+  setVal('demand', s.demand);    setVal('days', s.days);      setVal('bottle', s.bottle);
+  setVal('kwhL', s.kwhL);        setVal('uptime', s.uptime);  setVal('climate', s.climate);
+  setVal('capex_awg', s.capex_awg); setVal('install', s.install); setVal('maint', s.maint);
+  setVal('grid', s.grid);        setVal('pvkwp', s.pvkwp);    setVal('pvyield', s.pvyield);
+  setVal('pvcap', s.pvcap);      setVal('years', s.years);    setVal('disc', s.disc);
+  setVal('plastg', s.plastg);    setVal('pco2', s.pco2);      setVal('gco2', s.gco2);
+  run();
+}
+
 /* ===== Export CSV / PDF ===== */
 function ensureCalcOrWarn(){
   if(!lastCalc){
     const el = document.getElementById('err');
-    el.textContent = 'Fais d’abord un calcul pour activer l’export.';
+    el.textContent = 'Fais d’abord un calcul (ou choisis un scénario).';
     el.style.display='block';
     return false;
   }
@@ -280,7 +325,8 @@ function exportCSV(){
   if(!ensureCalcOrWarn()) return;
   const d = lastCalc;
   const rows = [
-    ['CalculGEA — AERYSGIN'],
+    ['CalculGEA — AERYSGIN (v18)'],
+    ['Scénario', d.scenario || 'Libre'],
     ['Société', d.client.company||''],
     ['Client', d.client.clientName||''],
     ['Fonction', d.client.clientRole||''],
@@ -332,21 +378,21 @@ function exportCSV(){
 }
 function exportPDF(){ if(!ensureCalcOrWarn()) return; window.print(); }
 
-/* ===== Boutons ===== */
+/* ===== Boutons & Scénarios ===== */
 document.addEventListener('DOMContentLoaded', ()=>{
   document.getElementById('calcBtn')?.addEventListener('click', run);
   document.getElementById('btnCsvTop')?.addEventListener('click', exportCSV);
   document.getElementById('btnPdfTop')?.addEventListener('click', exportPDF);
   document.getElementById('btnCsvBottom')?.addEventListener('click', exportCSV);
   document.getElementById('btnPdfBottom')?.addEventListener('click', exportPDF);
+  document.getElementById('scenario')?.addEventListener('change', (e)=> applyScenario(e.target.value));
 });
 
-/* ===== Service Worker (base auto GitHub Pages) ===== */
+/* ===== Service Worker ===== */
 (function(){
   if(!('serviceWorker' in navigator)) return;
   const params = new URLSearchParams(location.search);
-  const base = location.pathname.split('/').slice(0,2).join('/'); // ex: /CalculGEA
-
+  const base = location.pathname.split('/').slice(0,2).join('/'); // /CalculGEA
   async function resetSW(){
     const regs = await navigator.serviceWorker.getRegistrations();
     await Promise.all(regs.map(r=>r.unregister()));
@@ -356,10 +402,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }
     console.log('SW reset done');
   }
-
   window.addEventListener('load', async ()=>{
     if (params.get('debugsw') === '1') await resetSW();
-    navigator.serviceWorker.register(`${base}/sw.js?v=17`).catch(console.warn);
+    navigator.serviceWorker.register(`${base}/sw.js?v=18`).catch(console.warn);
   });
 })();
 </script>
