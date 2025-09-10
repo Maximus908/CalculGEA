@@ -3,7 +3,15 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>CalculGEA — AERYSGIN (v16)</title>
+<title>CalculGEA — AERYSGIN (v17)</title>
+
+<!-- PWA iPhone -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest?v=17">
+<meta name="theme-color" content="#0c3b5d"/>
+
 <style>
   :root{--bg:#0b1220;--fg:#f7f9fc;--muted:#a9b8cc;--card:#111a2b;--line:#22324a;--brand:#0c3b5d;--accent:#e6b800}
   *{box-sizing:border-box} html,body{margin:0}
@@ -44,12 +52,12 @@
       <div style="width:36px;height:36px;border-radius:8px;background:conic-gradient(from 45deg,var(--brand),var(--accent),var(--brand));margin-right:10px"></div>
       <div>
         <h1>CalculGEA — <span style="color:var(--accent)">AERYSGIN</span></h1>
-        <div class="muted">Simulateur ROI & sélection automatique GENAQ · <span id="ver">v16</span></div>
+        <div class="muted">PWA v17 · Simulateur ROI & sélection automatique GENAQ</div>
       </div>
     </div>
     <div class="row">
-      <button class="btn" id="btnCsvTop" title="Export CSV (après calcul)">Exporter CSV</button>
-      <button class="btn" id="btnPdfTop" title="Export PDF (après calcul)">Exporter PDF</button>
+      <button class="btn" id="btnCsvTop">Exporter CSV</button>
+      <button class="btn" id="btnPdfTop">Exporter PDF</button>
     </div>
   </div>
 </header>
@@ -58,7 +66,6 @@
   <div id="err" class="muted" style="display:none;color:#ffd7db;background:#3b0c12;border:1px solid #641a22;padding:8px;border-radius:8px"></div>
 
   <div class="grid">
-    <!-- Colonne gauche : client + paramètres -->
     <section class="card span-4 inputs">
       <h2 style="margin:0 0 8px">Informations client</h2>
       <label>Société <input id="company" placeholder="Nom de la société" inputmode="text"></label>
@@ -94,20 +101,17 @@
       <p class="muted">Décimales : virgule ou point acceptés.</p>
     </section>
 
-    <!-- Résumé -->
     <section class="card span-8">
       <h2 style="margin:0 0 8px">Résumé exécutif</h2>
       <div id="clientInfo" class="muted"></div>
       <div class="kpis" id="summary"><p class="muted">Clique “Calculer”.</p></div>
     </section>
 
-    <!-- Finance -->
     <section class="card span-12">
       <h2 style="margin:0 0 8px">Finance</h2>
       <div id="finance"><p class="muted">Les résultats s’affichent ici.</p></div>
     </section>
 
-    <!-- Impacts & Détails -->
     <section class="card span-6">
       <h2 style="margin:0 0 8px">Impacts</h2>
       <div id="impacts"><p class="muted">Après calcul.</p></div>
@@ -118,11 +122,10 @@
       <div id="details"><p class="muted">Après calcul.</p></div>
     </section>
 
-    <!-- Actions bas de page -->
     <section class="card span-12">
       <div class="row" style="justify-content:flex-end">
-        <button class="btn" id="btnCsvBottom" title="Export CSV (après calcul)">Exporter CSV</button>
-        <button class="btn" id="btnPdfBottom" title="Export PDF (après calcul)">Exporter PDF</button>
+        <button class="btn" id="btnCsvBottom">Exporter CSV</button>
+        <button class="btn" id="btnPdfBottom">Exporter PDF</button>
       </div>
     </section>
   </div>
@@ -263,7 +266,7 @@ function run(){
   }
 }
 
-/* ===== Export CSV/PDF ===== */
+/* ===== Export CSV / PDF ===== */
 function ensureCalcOrWarn(){
   if(!lastCalc){
     const el = document.getElementById('err');
@@ -327,21 +330,38 @@ function exportCSV(){
   const name = `calculgea_${ts.getFullYear()}${pad(ts.getMonth()+1)}${pad(ts.getDate())}_${pad(ts.getHours())}${pad(ts.getMinutes())}.csv`;
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click();
 }
-function exportPDF(){
-  if(!ensureCalcOrWarn()) return;
-  window.print();
-}
+function exportPDF(){ if(!ensureCalcOrWarn()) return; window.print(); }
 
-/* ===== Wiring boutons ===== */
+/* ===== Boutons ===== */
 document.addEventListener('DOMContentLoaded', ()=>{
   document.getElementById('calcBtn')?.addEventListener('click', run);
-  // Top
   document.getElementById('btnCsvTop')?.addEventListener('click', exportCSV);
   document.getElementById('btnPdfTop')?.addEventListener('click', exportPDF);
-  // Bottom
   document.getElementById('btnCsvBottom')?.addEventListener('click', exportCSV);
   document.getElementById('btnPdfBottom')?.addEventListener('click', exportPDF);
 });
+
+/* ===== Service Worker (base auto GitHub Pages) ===== */
+(function(){
+  if(!('serviceWorker' in navigator)) return;
+  const params = new URLSearchParams(location.search);
+  const base = location.pathname.split('/').slice(0,2).join('/'); // ex: /CalculGEA
+
+  async function resetSW(){
+    const regs = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(regs.map(r=>r.unregister()));
+    if ('caches' in window) {
+      const keys = await caches.keys();
+      await Promise.all(keys.map(k=>caches.delete(k)));
+    }
+    console.log('SW reset done');
+  }
+
+  window.addEventListener('load', async ()=>{
+    if (params.get('debugsw') === '1') await resetSW();
+    navigator.serviceWorker.register(`${base}/sw.js?v=17`).catch(console.warn);
+  });
+})();
 </script>
 </body>
 </html>
