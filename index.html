@@ -81,6 +81,7 @@
         <label>Scénario (pré-remplissage)</label>
         <select id="scenario">
           <option value="">— Choisir un scénario —</option>
+          <option value="famille">Famille (max 10 pers.)</option>
           <option value="pme">Bureau / PME (50 pers.)</option>
           <option value="hotel">Hôtel 3★ (80 chambres)</option>
           <option value="ecole">École (500 élèves)</option>
@@ -162,6 +163,32 @@ const MODELS = [
 
 /* ===== Scénarios (pré-remplissage) ===== */
 const SCENARIOS = {
+ famille: {
+  label: "Famille (max 10 pers.)",
+  // Hypothèse: 30 L/j/pers * 10 = 300 L/j
+  demand: 300,
+  days: 365,
+  bottle: 0.50,   // eau en bouteille un peu moins chère au foyer
+  kwhL: 0.32,     // petit modèle souvent un peu plus efficient
+  uptime: 0.95,
+  climate: 1.0,
+
+  capex_awg: 8000,
+  install: 800,
+  maint: 600,
+
+  grid: 0.25,
+  pvkwp: 2,       // petit kit PV
+  pvyield: 950,
+  pvcap: 1200,
+
+  years: 8,
+  disc: 0.08,
+
+  plastg: 20,
+  pco2: 2.7,
+  gco2: 0.23
+},
   pme:     {label:"Bureau / PME (50 pers.)", demand:150, days:250, bottle:0.6, kwhL:0.35, uptime:0.95, climate:1.0, capex_awg:10000, install:1000, maint:1000, grid:0.25, pvkwp:3, pvyield:950, pvcap:1200, years:10, disc:0.08, plastg:20, pco2:2.7, gco2:0.23},
   hotel:   {label:"Hôtel 3★ (80 chambres)", demand:240, days:365, bottle:0.6, kwhL:0.35, uptime:0.95, climate:1.0, capex_awg:15000, install:2000, maint:1500, grid:0.25, pvkwp:10, pvyield:1000, pvcap:1100, years:12, disc:0.08, plastg:20, pco2:2.7, gco2:0.23},
   ecole:   {label:"École (500 élèves)",      demand:750, days:180, bottle:0.5, kwhL:0.35, uptime:0.95, climate:1.0, capex_awg:18000, install:1500, maint:1200, grid:0.22, pvkwp:12, pvyield:950,  pvcap:1100, years:10, disc:0.07, plastg:20, pco2:2.7, gco2:0.22},
